@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 from decouple import config, Csv
+import matplotlib
+
+matplotlib.use('Agg')
 
 ONLINE = True
 
