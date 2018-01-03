@@ -23,9 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if ONLINE is True:
     SECRET_KEY = config('SECRET_KEY')
-    # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = False
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+    DEBUG = config('DEBUG', default=False, cast=bool)
+    ALLOWED_HOSTS = [".herokuapp.com"]
 else:
     SECRET_KEY = '+-$daw)-f4i9agvxa919z*o5+)3bhk%jjr=%9rdjmt*mk0_#-t'
     DEBUG = True
