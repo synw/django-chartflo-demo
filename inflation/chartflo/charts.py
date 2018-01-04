@@ -11,6 +11,7 @@ class Chart():
         cf.title("Processing global index")
         index = "Global index"
         gi = get.index_years(cf, index=index)
+        gi.sort("Date")
         gi.chart("Date", "Value")
         gi.opts(dict(tools=["hover"]))
         colors = dict(point="orange", line="green")
@@ -21,16 +22,19 @@ class Chart():
         gi.stack("global_index", c)
         gi.to_files("charts")
         # generate the sequence with the data
+        gi.backup()
         seq.process(index, gi)
+        gi.restore()
         return gi
 
     def index_year(self, cf, index, gi):
-        cf.subtitle("Processing index "+index)
+        cf.subtitle("Processing index " + index)
         gi.chart("Date", "Value")
         gi.style(dict(line_dash="dashed"))
         gi.color("grey")
         c = gi.line_("Global index")
         cf = get.index_years(cf, index=index)
+        cf.sort("Date")
         cf.chart("Date", "Value")
         cf.style(dict(line_dash=""))
         cf.size(10)
@@ -39,15 +43,17 @@ class Chart():
         c2 = cf.line_point_(index, colors=colors)
         # generate the sequence with the data
         seq.process(index, cf)
-        return c*c2
+        cf.restore()
+        return c * c2
 
     def indexes_years(self, cf, gi):
         indexes = list(cf.unique_("index").df["index"])
         indexes = indexes[1:]
-        cf.title("Processing indexes "+", ".join(indexes))
+        cf.title("Processing indexes " + ", ".join(indexes))
         for index in indexes:
             c = self.index_year(cf, index, gi)
             cf.restore()
+            gi.restore()
             cf.stack(slugify(index), c)
             cf.to_files("charts/indexes")
 
@@ -57,8 +63,8 @@ class Chart():
         cf.title("Processing years details")
         while prevyear < maxyear:
             year = prevyear + 1
-            cf.subtitle("Processing year "+str(year))
-            y = cf.daterange_("Date", str(prevyear)+"-12-31",
+            cf.subtitle("Processing year " + str(year))
+            y = cf.daterange_("Date", str(prevyear) + "-12-31",
                               "+", years=1)
             inds = y.split_("index")
             gi = inds["Global index"]
@@ -71,7 +77,7 @@ class Chart():
             gi.opts(dict(xrotation=0))
             c = gi.line_point_(colors=colors)
             cf.stack("global-index", c)
-            cf.to_files("charts/years/"+str(year))
+            cf.to_files("charts/years/" + str(year))
             # generate diff sequence for the year
             seq.year(year, cf)
             cf.restore()
@@ -85,7 +91,7 @@ class Chart():
         inds.pop("Global index")
         charts = []
         for index in inds:
-            cf.subtitle("Generating index "+index)
+            cf.subtitle("Generating index " + index)
             ind = inds[index]
             ind.dateindex("Date")
             ind.chart("Date", "Value")
@@ -104,6 +110,8 @@ class Chart():
     def make(self, cf):
         cf2 = cf.clone_()
         gi = self.global_index_years(cf2)
+        gi.backup()
+        cf.debug(gi.show(20))
         self.indexes_years(cf, gi)
         cf.restore()
         self.year_detail(cf)
