@@ -71,7 +71,7 @@ class Chart():
             gi.opts(dict(xrotation=0))
             c = gi.line_point_(colors=colors)
             cf.stack("global-index", c)
-            cf.to_files("charts/years/"+str(year))
+            cf.to_files("charts/years/"+str(prevyear))
             # generate diff sequence for the year
             seq.year(year, gi)
             # chart other index
@@ -103,10 +103,11 @@ class Chart():
     def make(self, cf):
         cf2 = cf.clone_()
         gi = self.global_index_years(cf2)
+        self.indexes_years(cf, gi)
+        cf.restore()
+        self.year_detail(cf)
         cf.restore()
         self.index_home(cf)
-        self.indexes_years(cf, gi)
-        self.year_detail(cf)
 
 
 charts = Chart()
