@@ -10,7 +10,7 @@ dataswim==0.4.10
 statsmodels==0.8.0
 django<2
 django-extensions==1.9.7
-django-chartflo==0.4.6
+django-chartflo==0.4.7
 whitenoise==3.3.1
 dj-database-url==0.4.2
 gunicorn==19.7.1
