@@ -6,8 +6,8 @@ class Sequence():
 
     def process(self, name, cf):
         slug = slugify(name)
-        cf.diffn("Value")
-        cf.drop_nan(method="any")
+        cf.diff("Value")
+        cf.df = cf.df.iloc[1:]
         cf.sequence(slug, "inflation", "Date", "Diff",
                     style="width:46px;padding:0.2em 0.6em 0.6em 0.2em",
                     trs=dict(high=3.0, low=0))
@@ -16,10 +16,16 @@ class Sequence():
         cf.restore()
         inds = cf.split_("index")
         cf = inds["Global index"]
-        cf.daterange("Date", str(year)+"-12-31", "+", months=13)
-        cf.sort("Date")
-        cf.diffn("Value")
-        cf.drop_nan(method="any")
+        if year == 1997:
+            cf.daterange("Date", str(year)+"-01-01", "+", months=12)
+            cf.sort("Date")
+            cf.diff("Value")
+            cf.df = cf.df.iloc[1:-1]
+        else:
+            cf.daterange("Date", str(year-1)+"-12-01", "+", months=13)
+            cf.sort("Date")
+            cf.diff("Value")
+            cf.df = cf.df.iloc[1:-1]
         style = "width:81px;height:55px;padding:0.5em 0.6em 0.6em 0.2em"
         cf.sequence("years/"+str(year), "inflation", "Month", "Diff",
                     style=style,
