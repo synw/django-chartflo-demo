@@ -4,7 +4,12 @@ Demo for [Django Chartflo](https://github.com/synw/django-chartflo)
 
 ### Install
 
-Clone the repository. Install the dependencies: `pip install -r requirements.txt`
+Clone the repository. Install the dependencies: 
+
+   ```bash
+   pip install --no-cache-dir dataset
+   pip install -r requirements.txt
+   ```
 
 ### Initialize
 
