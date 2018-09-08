@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<div class="container-fluid">
+	<div class="columns">
+		<div class="column is-8 is-spaced">
+			<nav class="level">
+				<div class="level-left">
+					<p class="level-item has-text-centered">{% include "dashboards/timeseries/numbers/mean_raw.html" %}</p>
+					<p class="level-item has-text-centered">{% include "dashboards/timeseries/numbers/mean_raw.html" %}</p>
+					<p class="level-item has-text-centered">{% include "dashboards/timeseries/numbers/mean_raw_week.html" %}</p>
+					<p class="level-item has-text-centered">{% include "dashboards/timeseries/numbers/mean_raw_month.html" %}</p>
+				</div>
+			</nav>
+			<div class="subtitle">Timeline</div>
+			{% include "dashboards/timeseries/charts/rawdata_timeline.html" %}
+			<div class="subtitle">Linear regression with marginal distribution <help text="Linear regression line
+				representing the general tendency with distribution representing the frequency of the
+				values"></help></div>
+				<img src="{% static 'dashboards/timeseries/rawdata_linear.png' %}" alt="" />
+			<div class="columns">
+				<div class="column is-half">
+					<div class="subtitle">Density<help text="Density of the values"></help></div>
+					<img src="{% static 'dashboards/timeseries/rawdata_density.png' %}" alt="" />
+				</div>
+				<div class="column is-half">
+					<div class="subtitle">Distribution<help text="Distribution of the values reprensenting the
+						frequency of the values"></help></div>
+					<img src="{% static 'dashboards/timeseries/rawdata_distrib.png' %}" alt="" />
+				</div>
+			</div>
+		</div>
+		<div class="column is-spaced">
+			<div v-html="msg"></div>
+			{% include "dashboards/timeseries/datatables/rawdata.html" %}
+		</div>	
+	</div>
+</div>

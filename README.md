@@ -2,14 +2,28 @@
 
 Demo for [Django Chartflo](https://github.com/synw/django-chartflo)
 
-### Run the demo online
+### Install
 
-[Launch the demo](https://chartflo.herokuapp.com/dashboards/inflation/)
+Clone the repository. Install the dependencies: `pip install -r requirements.txt`
 
-### Install the demo locally
+### Initialize
 
-To run the generator the demo has to be installed locally. To install:
+Make migrations and run them to create the Sqlite database.
 
-Clone the repository. Go to settings and set `ONLINE = False`.
+Run the management command to generate data and initialize the dashboards:
 
-Run the server and go to `/dashboards/inflation/`
+   ```bash
+   python3 manage.py init_timeseries
+   ``` 
+   
+Go to `/dashboards/timeseries/`
+
+### Management commands
+
+Extra management commands are available: `delete_timeseries` to delete all the data and `pipeline` to run the
+data pipeline to regenerate the charts.
+
+### Regenerate the charts on save
+
+Optional: run the Django rq worker: `python manage.py rqworker default`: the charts and widgets will be regenerated on 
+every save of the Serie model
