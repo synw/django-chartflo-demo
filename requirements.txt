@@ -13,7 +13,7 @@ click==6.7
 cycler==0.10.0
 DataProperty==0.31.2
 dataset==1.1.0
-dataswim==0.4.19
+dataswim==0.4.20
 decorator==4.3.0
 deepdish==0.3.6
 Django==2.1.1
