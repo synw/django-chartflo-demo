@@ -29,6 +29,7 @@ Run the management command to generate data and initialize the dashboards:
 
    ```bash
    python3 manage.py init_timeseries
+   python3 manage.py runserver
    ``` 
    
 Go to `/dashboards/timeseries/`
