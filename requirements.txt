@@ -18,6 +18,7 @@ decorator==4.3.0
 deepdish==0.3.6
 Django==2.1.1
 django-bulma==0.5.1
+django-chartflo==0.5
 django-extensions==2.1.2
 django-pandas==0.5.1
 django-rq==1.2.0
