@@ -14,7 +14,6 @@ class Generator(Err):
     def timeline(self, slug):
         ds.status("Generating timeline for " + slug)
         ds.chart("Date", "Value")
-        ds.date("Date", format="%d %B")
         if slug == "month":
             c = ds.bar_()
         elif slug == "rawdata":
@@ -29,19 +28,27 @@ class Generator(Err):
         ds.status("Generating diff timeline for " + slug)
         ds.df = ds.df.rename(columns={"Value": "Start Value"})
         ds.diffm("Start Value")
-        ds.drop_nan("Diff")
-        ds.height(350)
+        ds.fill_nan(0, "Diff")
         ds.opts(dict(tools=["hover"]))
+        ds.date("Date", format="%Y-%m-%d")
+        if slug == "day":
+            ds.opts(dict(xaxis=None))
+            ds.height(250)
+        else:
+            ds.height(350)
         ds.chart("Date", "Diff")
         # ds.date("Date", format="%Y-%m-%d")
         c = ds.bar_()
         ds.color("green")
+        ds.style('date_format', "%Y-%m-%d")
         c1 = ds.lreg_()
         c2 = c * c1
         ds.stack(slug + "_difftimeline", c2, "Diff timeline")
         ds.height(250)
         ds.color("#30A2DA")
         ds.opts(dict(tools=[]))
+        if slug == "day":
+            del ds.chart_opts["xaxis"]
         
     def seaborn_charts(self, slug):
         ds.status("Generating Seaborn charts for " + slug)
