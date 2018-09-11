@@ -13,12 +13,12 @@ click==6.7
 cycler==0.10.0
 DataProperty==0.31.2
 dataset==1.1.0
-dataswim==0.4.21
+dataswim==0.4.22
 decorator==4.3.0
 deepdish==0.3.6
 Django==2.1.1
 django-bulma==0.5.1
-django-chartflo==0.5
+django-chartflo==0.5.1
 django-extensions==2.1.2
 django-pandas==0.5.1
 django-rq==1.2.0

@@ -4,6 +4,7 @@ from goerr import Err
 from dataswim import ds
 from chartflo.widgets.number import Number
 from chartflo.widgets.datatable import DataTable
+from chartflo.altair import save_altair_chart
 
 
 class Generator(Err):
@@ -13,16 +14,32 @@ class Generator(Err):
     
     def timeline(self, slug):
         ds.status("Generating timeline for " + slug)
-        ds.chart("Date", "Value")
-        if slug == "month":
-            c = ds.bar_()
-        elif slug == "rawdata":
-            c = ds.point_()
+        if slug != "rawdata":
+            ds.chart("Date", "Value")
+            if slug == "month":
+                c = ds.bar_()
+            else:
+                c = ds.area_()
+            c1 = ds.hline_("Value")
+            c2 = c * c1
+            ds.stack(slug + "_timeline", c2, "Timeline")
         else:
-            c = ds.area_()
-        c1 = ds.hline_("Value")
-        c2 = c * c1
-        ds.stack(slug + "_timeline", c2, "Timeline")
+            ds.engine = "altair"
+            ds.reset_opts()
+            ds.width(750)
+            ds.height(200)
+            ds.date("Date")
+            ds.color("Value")
+            ds.chart("Date:T", "Value:Q")
+            c = ds.circle_()
+            ds.rstyle("color")
+            c1 = ds.hline_()
+            c2 = c1 + c
+            ds.width(900)
+            ds.height(250)
+            # ds.stack(slug + "_timeline", c, "Timeline")
+            save_altair_chart(c2, slug + "_timeline", "timeseries")
+            ds.engine = "bokeh"
         
     def difftimeline(self, slug):
         ds.status("Generating diff timeline for " + slug)
@@ -173,7 +190,6 @@ def generate(query):
     ds.start("Running data pipeline")
     ds.width(900)
     ds.height(250)
-    ds.opts(dict(xrotation=45))
     ds.report_path = "templates/dashboards/timeseries/charts"
     ds.static_path = "static/dashboards/timeseries"
     ds.df = query.to_dataframe()
@@ -187,6 +203,7 @@ def generate(query):
     gen.raw_nums("raw", "Mean")
     # day
     ds.restore()
+    ds.opts(dict(xrotation=45))
     ds.rsum("1D")
     df = ds.df.copy()
     gen.charts_tables("day", df)
