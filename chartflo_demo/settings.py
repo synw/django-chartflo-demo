@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_pandas",
     "django_rq",
+    'adminsortable2',
     "vv",
     'chartflo',
     'timeseries',

@@ -14,22 +14,22 @@
 			{% include "dashboards/timeseries/charts/day_timeline.html" %}
 			<div class="subtitle">Diff from the mean <help text="Percentage difference from the mean value with a linear 
 				regression line representing the general tendency"></help></div>
-			{% include "dashboards/timeseries/charts/day_difftimeline.html" %}
+			{% include "dashboards/timeseries/charts/day_difftimeline.html" %}<br />
 			<div class="subtitle">Linear regression with marginal distribution <help text="Linear regression line
 				representing the general tendency with distribution representing the frequency of the
 				values"></help></div>
 				<img src="{% static 'dashboards/timeseries/day_linear.png' %}" alt="" />
-		<div class="columns">
-			<div class="column is-half">
-				<div class="subtitle">Density<help text="Density of the values"></help></div>
-				<img src="{% static 'dashboards/timeseries/day_density.png' %}" alt="" />
+			<div class="columns">
+				<div class="column is-half">
+					<div class="subtitle">Density<help text="Density of the values"></help></div>
+					<img src="{% static 'dashboards/timeseries/day_density.png' %}" alt="" />
+				</div>
+				<div class="column is-half">
+					<div class="subtitle">Distribution<help text="Distribution of the values reprensenting the
+						frequency of the values"></help></div>
+					<img src="{% static 'dashboards/timeseries/day_distrib.png' %}" alt="" />
+				</div>
 			</div>
-			<div class="column is-half">
-				<div class="subtitle">Distribution<help text="Distribution of the values reprensenting the
-					frequency of the values"></help></div>
-				<img src="{% static 'dashboards/timeseries/day_distrib.png' %}" alt="" />
-			</div>
-		</div>
 		</div>
 		<div class="column is-spaced">
 			<div v-html="msg"></div>

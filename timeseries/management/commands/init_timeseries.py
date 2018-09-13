@@ -36,8 +36,8 @@ class Command(BaseCommand):
         dash, _ = Dashboard.objects.get_or_create(slug="timeseries", title="Timeseries",
                                         public=True,)
         DashboardView.objects.create(dashboard=dash, slug="rawdata", title="Raw data")
-        DashboardView.objects.create(dashboard=dash, slug="day", title="Day")
-        DashboardView.objects.create(dashboard=dash, slug="week", title="Week", active=True)
+        DashboardView.objects.create(dashboard=dash, slug="day", title="Day", active=True)
+        DashboardView.objects.create(dashboard=dash, slug="week", title="Week")
         DashboardView.objects.create(dashboard=dash, slug="month", title="Month")
         query = Serie.objects.all()
         generate(query)

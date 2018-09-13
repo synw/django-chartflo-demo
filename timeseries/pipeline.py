@@ -14,58 +14,93 @@ class Generator(Err):
     
     def timeline(self, slug):
         ds.status("Generating timeline for " + slug)
-        if slug != "rawdata":
-            ds.chart("Date", "Value")
-            if slug == "month":
-                c = ds.bar_()
-            else:
-                c = ds.area_()
-            c1 = ds.hline_("Value")
-            c2 = c * c1
-            ds.stack(slug + "_timeline", c2, "Timeline")
-        else:
+        ds.defaults()
+        if slug == "rawdata":
             ds.engine = "altair"
-            ds.reset_opts()
-            ds.width(750)
+            ds.width(700)
             ds.height(200)
+            ds.size(15)
             ds.date("Date")
-            ds.color("Value")
+            ds.aenc("color", "Value")
             ds.chart("Date:T", "Value:Q")
-            c = ds.circle_()
-            ds.rstyle("color")
+            c = ds.point_()
+            ds.raencs()
             c1 = ds.hline_()
             c2 = c1 + c
-            ds.width(900)
-            ds.height(250)
-            # ds.stack(slug + "_timeline", c, "Timeline")
             save_altair_chart(c2, slug + "_timeline", "timeseries")
-            ds.engine = "bokeh"
+        elif slug in ["month", "week"]:
+            ds.opt("tools", ["hover"])
+            if slug == "week":
+                ds.opt("xrotation", 45)
+            ds.date("Date", precision="D")
+            ds.chart("Date", "Value")
+            if slug == "week":
+                c = ds.line_point_()
+            else:
+                c = ds.bar_()
+            ds.ropts()
+            ds.color("green")
+            c1 = ds.hline_("Value")
+            c2 = c * c1
+            ds.stack(slug + "_timeline", c2, "Timeline")   
+        else:
+            ds.engine = "altair"
+            ds.width(750)
+            ds.height(200)
+            ds.zero_nan("Value")
+            ds.drop_nan("Value")
+            ds.chart("Date:T", "Value:Q")
+            c = ds.line_num_()
+            ds.color("green")
+            ds.style("opacity", 0.7)
+            c2 = ds.hline_()
+            c3 = c2 + c
+            save_altair_chart(c3, slug + "_timeline", "timeseries")
+        ds.engine = "bokeh"
         
     def difftimeline(self, slug):
         ds.status("Generating diff timeline for " + slug)
-        ds.df = ds.df.rename(columns={"Value": "Start Value"})
-        ds.diffm("Start Value")
-        ds.fill_nan(0, "Diff")
-        ds.opts(dict(tools=["hover"]))
-        ds.date("Date", format="%Y-%m-%d")
+        ds.defaults()
         if slug == "day":
-            ds.opts(dict(xaxis=None))
-            ds.height(250)
+            ds.engine = 'altair'
+            ds.raencs()
+            ds.width(750)
+            ds.height(200)
+            ds.diffm("Value")
+            ds.fill_nan(0, "Diff")
+            ds.timestamps("Date")
+            ds.lreg("Timestamps", "Diff")
+            ds.color("green")
+            ds.chart("Date:T", "Regression:Q")
+            ds.style("opacity", 0.7)
+            c = ds.line_()
+            ds.chart("Date:T", "Diff:Q")
+            ds.rcolor()
+            ds.rstyle("opacity")
+            c2 = ds.bar_()
+            ds.styles(dict(align="center", baseline="bottom"))
+            ds.aenc("text", "Diff:Q")
+            ds.color("grey")
+            c3 = ds.text_()
+            c4 = c + c2 + c3
+            save_altair_chart(c4, slug + "_difftimeline", "timeseries")
         else:
+            ds.diffm("Value")
+            ds.fill_nan(0, "Diff")
+            ds.chart("Date", "Diff")
+            ds.opts(dict(tools=["hover"]))
+            if slug != "month":
+                ds.opt("xrotation", 45)
+            ds.date("Date", precision="D")
             ds.height(350)
-        ds.chart("Date", "Diff")
-        # ds.date("Date", format="%Y-%m-%d")
-        c = ds.bar_()
-        ds.color("green")
-        ds.style('date_format', "%Y-%m-%d")
-        c1 = ds.lreg_()
-        c2 = c * c1
-        ds.stack(slug + "_difftimeline", c2, "Diff timeline")
-        ds.height(250)
-        ds.color("#30A2DA")
-        ds.opts(dict(tools=[]))
-        if slug == "day":
-            del ds.chart_opts["xaxis"]
+            c = ds.bar_()
+            ds.color("green")
+            ds.style('date_format', "%Y-%m-%d")
+            c1 = ds.lreg_()
+            c2 = c * c1
+            ds.stack(slug + "_difftimeline", c2, "Diff timeline")
+        ds.defaults()
+        ds.engine = "bokeh"
         
     def seaborn_charts(self, slug):
         ds.status("Generating Seaborn charts for " + slug)
@@ -137,7 +172,7 @@ class Generator(Err):
             self.fatal(e)
         ds.df = df
         try:
-            if slug != "raw_data":
+            if slug != "rawdata":
                 self.difftimeline(slug)
         except Exception as e:
             self.fatal(e)
@@ -151,6 +186,7 @@ class Generator(Err):
             self.seaborn_charts(slug)
         except Exception as e:
             self.fatal(e)
+        ds.df = df
         
     def nums(self, slug, df):
         sparkline = None
@@ -203,7 +239,6 @@ def generate(query):
     gen.raw_nums("raw", "Mean")
     # day
     ds.restore()
-    ds.opts(dict(xrotation=45))
     ds.rsum("1D")
     df = ds.df.copy()
     gen.charts_tables("day", df)
