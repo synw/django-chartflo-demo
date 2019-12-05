@@ -16,7 +16,7 @@ dataset==1.1.0
 dataswim==0.4.23
 decorator==4.3.0
 deepdish==0.3.6
-Django==2.1.1
+Django==2.1.11
 django-bulma==0.5.1
 django-chartflo==0.5.2
 django-extensions==2.1.2
